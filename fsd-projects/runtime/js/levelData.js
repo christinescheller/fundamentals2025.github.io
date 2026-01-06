@@ -15,9 +15,13 @@ var makeLevelData = function (window) {
         number: 1,
         speed: -3,
         gameItems: [
-          { type: "sawblade", x: 400, y: groundY },
-          { type: "sawblade", x: 600, y: groundY },
-          { type: "sawblade", x: 900, y: groundY },
+          { type: "obstacle", x: 400, y: groundY - 110, damage: 10, rotation: 0, hitZone: 25, image: "img/spikes.png", offsetX: -25, offsetY: -25},
+          { type: "obstacle", x: 600, y: groundY - 10, damage: 20, rotation: 0, hitZone: 25, image: "img/spikes.png", offsetX: -25, offsetY: -25 },
+          { type: "obstacle", x: 800, y: groundY - 110, damage: 30, rotation: 0, hitZone: 25, image: "img/spikes.png", offsetX: -25, offsetY: -25 },
+          { type: "enemy", x: 400, y: groundY - 50, damage: 10, scale: 1, offsetX: 0, offsetY: 0, hitzone: 25, velocity: 3, rotation: 0, changeScore: 100, maxHits: 3 },
+          { type: "enemy", x: 600, y: groundY - 50, damage: 10, scale: 1, offsetX: 0, offsetY: 0, hitzone: 25, velocity: 3, rotation: 0, changeScore: 50 }, // 1 hit by default
+          { type: "reward", x: 900, y: groundY - 100},
+          { type: "levelMarker", x: 1000, y: groundY - 100},
         ],
       },
       {
@@ -25,9 +29,9 @@ var makeLevelData = function (window) {
         number: 2,
         speed: -3,
         gameItems: [
-          { type: "sawblade", x: 400, y: groundY },
-          { type: "sawblade", x: 600, y: groundY },
-          { type: "sawblade", x: 900, y: groundY },
+          { type: "obstacle", x: 400, y: groundY },
+          { type: "obstacle", x: 600, y: groundY },
+          { type: "obstacle", x: 900, y: groundY },
         ],
       },
     ];

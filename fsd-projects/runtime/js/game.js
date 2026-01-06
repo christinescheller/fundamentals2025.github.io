@@ -92,71 +92,51 @@
 
            See documentation on these methods
          */
-        function createGameItem(type,radius) {
-            var body = _.extend(new createjs.Container(),physikz.makeBody(type));
+        function createGameItem(type, radius, hitsRequired) {
+            var body = _.extend(new createjs.Container(), physikz.makeBody(type));
             body.radius = radius;
 
-            body.handleCollision =  function (impact, otherBody) {
-                if(body.collided) {
-                    return;
-                }
-                body.collided = true;
-                if(otherBody.type == 'hitzone') {
+            body.hitsTaken = 0;                  // Track projectile hits
+            body.maxHits = hitsRequired || 1;    // Default 1 hit to destroy
+
+            body.handleCollision = function(impact, otherBody) {
+                if (otherBody.type === 'hitzone') {
                     body.onPlayerCollision(body);    
-                }
-                else if(otherBody.type == 'projectile') {
+                } else if (otherBody.type === 'projectile') {
                     body.onProjectileCollision(body);    
                 }
-            }
+            };
 
-            /* Called when this game item is hit by one of halles projectiles
-               for the first time 
-             */
             body.onProjectileCollision = function(self) {
+                body.hitsTaken++;
+                console.log("Projectile hit! Total hits: " + body.hitsTaken);
 
-            }
+                // Flash red for feedback
+                if (body.children.length > 0) {
+                    body.children[0].alpha = 0.5;
+                    setTimeout(() => body.children[0].alpha = 1, 100);
+                }
 
-            /* Called when this game item hits the Halle the first time */
-            body.onPlayerCollision = function(self) {
+                // Remove/fade out only if hits >= maxHits
+                if (body.hitsTaken >= body.maxHits) {
+                    body.fadeOut();
+                }
+            };
 
-            }
+            body.onPlayerCollision = function(self) {};
 
-            /* animate this game item out of the game by fading out 
-               duration is in milliseconds 
-            */
             body.fadeOut = function(duration) {
                 duration = duration || 100;
                 removeFromSpace(body);
                 createjs.Tween.get(body).to({alpha: 0}, duration).call(function() {
                     removeGameItem(body);
                 });
-            }
+            };
 
-            /* animate this game item out of the game by shrinking it to nothing
-               duration is in milliseconds 
-            */
-            body.shrink = function(duration) {
-                duration = duration || 100;
-                removeFromSpace(body);
-                createjs.Tween.get(body).to({scaleX: 0, scaleY: 0}, duration).call(function() {
-                    removeGameItem(body);
-                }); 
-            }
-
-            /* animate this game item out of the game by moving it to a particular
-               position
-               x and y should be offscreen
-               duration is in milliseconds 
-            */
-            body.flyTo = function(x,y,duration) {
-                duration = duration || 100;
-                removeFromSpace(body);
-                createjs.Tween.get(body).to({x:x,y:y}, duration).call(function() {
-                    removeGameItem(body);
-                }); 
-            }
             return body;
         }
+
+
 
         /* add a game item and animate it according to the following properties
             
